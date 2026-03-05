@@ -1,0 +1,126 @@
+<div class="dashboard">
+
+  <!-- STAT CARDS -->
+
+  <div class="stats-grid">
+
+    <div class="stat-card">
+
+      <div class="stat-title">
+        Monthly spending
+      </div>
+
+      <div class="stat-value">
+        {{ subService.getMonthlyCost() | number:'1.0-2' }} CHF
+      </div>
+
+      <div class="stat-desc">
+        Total subscription cost per month
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-title">
+        Active subscriptions
+      </div>
+
+      <div class="stat-value">
+        {{ subService.getAll().length }}
+      </div>
+
+      <div class="stat-desc">
+        Services you are currently paying for
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-title">
+        Yearly spending
+      </div>
+
+      <div class="stat-value">
+        {{ subService.getMonthlyCost() * 12 | number:'1.0-0' }} CHF
+      </div>
+
+      <div class="stat-desc">
+        Estimated yearly subscription cost
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- NEXT PAYMENT -->
+
+  <div class="card next-payment-card">
+
+    <h2>Next Payment</h2>
+
+    <div *ngIf="subService.getNextPayment() as next; else noPayment">
+
+      <div class="next-payment-name">
+        {{ next.name }}
+      </div>
+
+      <div class="next-payment-date">
+        {{ next.nextPayment | date:'d MMM yyyy' }}
+      </div>
+
+    </div>
+
+    <ng-template #noPayment>
+
+      <p class="empty-text">
+        No upcoming payments yet
+      </p>
+
+    </ng-template>
+
+  </div>
+
+
+  <!-- RECENT SUBSCRIPTIONS -->
+
+  <div class="card">
+
+    <h2>Your Subscriptions</h2>
+
+    <div *ngIf="subService.getAll().length === 0" class="empty-state">
+
+      <p class="empty-title">No subscriptions yet</p>
+
+      <p class="empty-text">
+        Add your first subscription to start tracking your spending.
+      </p>
+
+    </div>
+
+
+    <div *ngIf="subService.getAll().length > 0" class="recent-list">
+
+      <div
+        class="recent-item"
+        *ngFor="let sub of subService.getAll().slice(0,3)">
+
+        <span class="recent-name">
+          {{ sub.name }}
+        </span>
+
+        <span class="recent-price">
+          {{ sub.price }} CHF
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

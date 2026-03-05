@@ -1,0 +1,169 @@
+<div class="card">
+
+  <h2>Add a Subscription</h2>
+
+  <p class="subtitle">
+    Add a service you pay for regularly so you can track your monthly spending.
+  </p>
+
+  <form #subForm="ngForm"
+        (ngSubmit)="addSubscription(subForm)"
+        class="subscription-form"
+        novalidate>
+
+    <div class="form-grid">
+
+      <!-- Service -->
+      <div class="form-field">
+        <label>Service</label>
+
+        <input
+          type="text"
+          placeholder="Netflix, Spotify, Gym..."
+          [(ngModel)]="newSubscription.name"
+          name="name"
+          required
+          #name="ngModel"
+          [class.invalid]="name.invalid && (name.touched || subForm.submitted)"
+        >
+
+        <div class="error-bubble"
+             *ngIf="name.invalid && (name.touched || subForm.submitted)">
+          Please enter a service name
+        </div>
+      </div>
+
+
+      <!-- Price -->
+      <div class="form-field">
+        <label>Price (CHF)</label>
+
+        <input
+          type="number"
+          [(ngModel)]="newSubscription.price"
+          name="price"
+          required
+          min="0.01"
+          step="0.01"
+          #price="ngModel"
+          [class.invalid]="price.invalid && (price.touched || subForm.submitted)"
+        >
+
+        <div class="error-bubble"
+             *ngIf="price.invalid && (price.touched || subForm.submitted)">
+          Please enter a valid price
+        </div>
+      </div>
+
+
+      <!-- Billing -->
+      <div class="form-field">
+        <label>Billing cycle</label>
+
+        <select
+          [(ngModel)]="newSubscription.billingCycle"
+          name="billingCycle"
+          required
+          #billingCycle="ngModel"
+          [class.invalid]="billingCycle.invalid && (billingCycle.touched || subForm.submitted)"
+        >
+          <option value="monthly">Monthly</option>
+          <option value="yearly">Yearly</option>
+        </select>
+
+        <div class="error-bubble"
+             *ngIf="billingCycle.invalid && (billingCycle.touched || subForm.submitted)">
+          Please choose a billing cycle
+        </div>
+      </div>
+
+
+      <!-- Next Payment -->
+      <div class="form-field">
+        <label>Next payment</label>
+
+        <input
+          type="date"
+          [(ngModel)]="newSubscription.nextPayment"
+          name="nextPayment"
+          required
+          #nextPayment="ngModel"
+          [class.invalid]="nextPayment.invalid && (nextPayment.touched || subForm.submitted)"
+        >
+
+        <div class="error-bubble"
+             *ngIf="nextPayment.invalid && (nextPayment.touched || subForm.submitted)">
+          Please select the next payment date
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="form-actions">
+
+      <label class="important-toggle">
+        <input
+          type="checkbox"
+          [(ngModel)]="newSubscription.important"
+          name="important"
+        >
+        Mark as important
+      </label>
+
+      <button type="submit" class="add-btn">
+        Add Subscription
+      </button>
+
+    </div>
+
+  </form>
+
+</div>
+
+
+
+<div class="card">
+
+  <h2>Your Subscriptions</h2>
+
+  <div *ngIf="subService.getAll().length === 0" class="empty-state">
+    <p class="empty-title">No subscriptions yet</p>
+    <p class="empty-text">
+      Add your first subscription above to start tracking your spending.
+    </p>
+  </div>
+
+  <div class="subscription-grid" *ngIf="subService.getAll().length > 0">
+
+    <div class="subscription-card"
+         [class.important]="sub.important"
+         *ngFor="let sub of subService.getAll(); let i = index">
+
+      <div class="sub-header">
+        <h3>{{ sub.name }}</h3>
+        <button class="delete-btn" (click)="subService.remove(i)">Delete</button>
+      </div>
+
+      <div class="sub-details">
+        <div>
+          <span class="label">Price</span>
+          <span>{{ sub.price }} CHF</span>
+        </div>
+
+        <div>
+          <span class="label">Billing</span>
+          <span>{{ sub.billingCycle }}</span>
+        </div>
+
+        <div>
+          <span class="label">Next payment</span>
+          <span>{{ sub.nextPayment | date:'d MMM yyyy' }}</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
